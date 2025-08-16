@@ -26,6 +26,10 @@ spring:
           uri: http://localhost:8085
           predicates:
             - Path=/ws/**
+        - id: kyc-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/api/kyc/**
 
 logging:
   level:

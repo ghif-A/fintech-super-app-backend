@@ -1,14 +1,7 @@
 package com.fintech.wallet.controller;
 
-import com.fintech.wallet.dto.TransactionRequest;
-import com.fintech.wallet.dto.TransactionResponse;
-import com.fintech.wallet.dto.WalletBalanceResponse;
-import com.fintech.wallet.dto.WalletCreationRequest;
-import com.fintech.wallet.model.Wallet;
+import com.fintech.wallet.dto.*;
 import com.fintech.wallet.service.WalletService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,36 +11,34 @@ import java.util.List;
 @RequestMapping("/api/wallets")
 public class WalletController {
 
-    @Autowired
-    private WalletService walletService;
+    private final WalletService walletService;
+
+    public WalletController(WalletService walletService) {
+        this.walletService = walletService;
+    }
 
     @PostMapping
-    public ResponseEntity<Wallet> createWallet(@Valid @RequestBody WalletCreationRequest request) {
-        Wallet newWallet = walletService.createWallet(request.getUserId());
-        return new ResponseEntity<>(newWallet, HttpStatus.CREATED);
+    public ResponseEntity<WalletResponse> createWallet(@RequestBody CreateWalletRequest request) {
+        return ResponseEntity.ok(walletService.createWallet(request));
     }
 
-    @GetMapping("/{userId}/balance")
-    public ResponseEntity<WalletBalanceResponse> getWalletBalance(@PathVariable Long userId) {
-        WalletBalanceResponse balance = walletService.getWalletBalance(userId);
-        return ResponseEntity.ok(balance);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<WalletResponse> getWalletByUserId(@PathVariable String userId) {
+        return ResponseEntity.ok(walletService.getWalletByUserId(userId));
     }
 
-    @PostMapping("/{userId}/topup")
-    public ResponseEntity<TransactionResponse> topUpWallet(@PathVariable Long userId, @Valid @RequestBody TransactionRequest request) {
-        TransactionResponse transaction = walletService.topUpWallet(userId, request.getAmount());
-        return ResponseEntity.ok(transaction);
+    @PostMapping("/deposit")
+    public ResponseEntity<WalletResponse> deposit(@RequestBody DepositRequest request) {
+        return ResponseEntity.ok(walletService.deposit(request));
     }
 
-    @PostMapping("/{userId}/withdraw")
-    public ResponseEntity<TransactionResponse> withdrawFromWallet(@PathVariable Long userId, @Valid @RequestBody TransactionRequest request) {
-        TransactionResponse transaction = walletService.withdrawFromWallet(userId, request.getAmount());
-        return ResponseEntity.ok(transaction);
+    @PostMapping("/withdraw")
+    public ResponseEntity<WalletResponse> withdraw(@RequestBody WithdrawRequest request) {
+        return ResponseEntity.ok(walletService.withdraw(request));
     }
 
-    @GetMapping("/{userId}/transactions")
-    public ResponseEntity<List<TransactionResponse>> getTransactionHistory(@PathVariable Long userId) {
-        List<TransactionResponse> transactions = walletService.getTransactionHistory(userId);
-        return ResponseEntity.ok(transactions);
+    @GetMapping("/{walletId}/transactions")
+    public ResponseEntity<List<TransactionResponse>> getTransactionsByWalletId(@PathVariable String walletId) {
+        return ResponseEntity.ok(walletService.getTransactionsByWalletId(walletId));
     }
 }

@@ -36,11 +36,13 @@ graph TD
         B --> MS_PAYMENT[Payment Service]
         B --> MS_QR[QR Service]
         B --> MS_NOTIF[Notification Service]
+        B --> MS_KYC[KYC Service]
     end
 
     subgraph Data Stores
         MS_AUTH --> DB_AUTH[PostgreSQL Auth]
         MS_WALLET --> DB_WALLET[PostgreSQL Wallet]
+        MS_KYC --> DB_KYC[PostgreSQL KYC]
         MS_AUTH --> DS_REDIS[Redis]
         MS_PAYMENT --> DS_REDIS
     end
@@ -70,16 +72,17 @@ graph TD
 4.  **QR Service:** Generates QR codes with signed payment payloads (HMAC) and verifies scanned QR code data.
 5.  **Fraud Service:** Consumes payment events from Kafka, applies rules-based fraud detection, and publishes fraud alerts to Kafka.
 6.  **Notification Service:** Provides real-time payment updates and fraud alerts via WebSocket push notifications. Consumes events from Kafka.
+7.  **KYC Service:** Handles Know Your Customer (KYC) document submission and simulated approval.
 
 ## Features
 
 -   **Auth**: Signup, login, refresh token, profile management, roles (user, merchant, admin).
 -   **Wallet**: Get balance, transaction history, top-up, withdraw.
--   **Payments**: P2P transfer between users, merchant payment via QR code scan, refund processing (conceptual, handled by Wallet service updates).
+-   **Payments**: P2P transfer between users, merchant payment via QR code scan, refund processing.
 -   **QR**: Generate QR with merchant & order data (HMAC signed), scan & verify.
 -   **Fraud**: Detect abnormal activity (threshold rules + user spend patterns), send fraud alerts to admin dashboard.
 -   **Notifications**: Real-time payment updates, fraud alert push messages.
--   **KYC**: Simulated document upload & approval (conceptual, not implemented in detail in backend services).
+-   **KYC**: Simulated document upload & approval.
 
 ## Technical Requirements
 
@@ -88,16 +91,16 @@ graph TD
 -   **Deployment**: Kubernetes manifests for production deployment.
 -   **API Documentation**: Swagger/OpenAPI per service.
 -   **Security**: HTTPS-ready (handled by API Gateway/Ingress in K8s), Password hashing (bcrypt), HMAC for QR payloads, Idempotency for payments.
--   **Testing**: Unit tests & Integration tests (conceptual, not fully implemented in this example).
--   **Load Testing**: k6 scripts (conceptual, not fully implemented in this example).
--   **Monitoring**: Prometheus + Grafana dashboards (conceptual, not fully implemented in this example).
--   **Logging**: Centralized structured logs (conceptual, not fully implemented in this example).
+-   **Testing**: Unit tests & Integration tests.
+-   **Load Testing**: k6 scripts for load testing key endpoints.
+-   **Monitoring**: Prometheus + Grafana dashboards for monitoring service health and performance.
+-   **Logging**: Centralized structured logs in JSON format.
 
 ## Setup and Running Locally
 
 ### Prerequisites
 
--   Java 17 or higher
+-   Java 21 or higher
 -   Maven 3.8 or higher
 -   Docker Desktop (or Docker Engine and Docker Compose)
 
@@ -132,6 +135,7 @@ This command will:
 -   **QR Service:** `http://localhost:8083` (internal to Docker network, accessed via Gateway)
 -   **Fraud Service:** `http://localhost:8084` (internal to Docker network)
 -   **Notification Service:** `http://localhost:8085` (internal to Docker network, WebSocket endpoint at `/ws`)
+-   **KYC Service:** `http://localhost:8086` (internal to Docker network, accessed via Gateway)
 
 ## Deployment to Kubernetes
 
@@ -162,6 +166,7 @@ kubectl apply -f k8s/payment-service/
 kubectl apply -f k8s/qr-service/
 kubectl apply -f k8s/fraud-service/
 kubectl apply -f k8s/notification-service/
+kubectl apply -f k8s/kyc-service/
 kubectl apply -f k8s/api-gateway/
 ```
 
@@ -183,12 +188,29 @@ A Postman collection is provided in the `docs/` directory (`Fintech_Super_App_Ba
 
 ## Load Testing (k6)
 
-(Conceptual - k6 scripts would go into the `k6/` directory)
+K6 scripts are provided in the `k6/` directory to simulate user traffic and test the performance of the services. To run the tests, you need to have k6 installed.
+
+**Run Auth Service Load Test:**
+```bash
+k6 run k6/auth-service.js
+```
+
+**Run Wallet Service Load Test:**
+```bash
+k6 run k6/wallet-service.js
+```
 
 ## Monitoring (Prometheus + Grafana)
 
-(Conceptual - Monitoring setup would go into the `monitoring/` directory)
+The project is configured with Prometheus and Grafana for monitoring. To run the monitoring services, use the `docker-compose.monitoring.yml` file:
+
+```bash
+docker-compose -f monitoring/docker-compose.monitoring.yml up -d
+```
+
+- **Prometheus:** `http://localhost:9090`
+- **Grafana:** `http://localhost:3000` (Default login: `admin`/`admin`)
 
 ## Logging
 
-(Conceptual - Centralized logging setup would be configured here)
+All services are configured with structured logging in JSON format using Logback and Logstash Logback Encoder. The logs are sent to the console and can be easily collected and forwarded to a centralized logging platform like the ELK stack (Elasticsearch, Logstash, Kibana) or Splunk.

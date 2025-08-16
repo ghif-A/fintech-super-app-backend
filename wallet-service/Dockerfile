@@ -6,7 +6,7 @@ COPY src ./src
 RUN mvn clean install -DskipTests
 
 # Package stage
-FROM openjdk:17-jdk-slim
+FROM openjdk:21-jdk-slim
 WORKDIR /app
 COPY --from=build /app/target/wallet-service-1.0.0-SNAPSHOT.jar wallet-service.jar
 EXPOSE 8081

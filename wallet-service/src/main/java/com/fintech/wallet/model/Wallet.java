@@ -1,10 +1,9 @@
 package com.fintech.wallet.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import jakarta.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 @Table(name = "wallets")
@@ -14,17 +13,10 @@ import java.math.BigDecimal;
 public class Wallet {
 
     @Id
-    private Long userId; // User ID from Auth Service
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
-    @Column(nullable = false)
-    private BigDecimal balance;
+    private String userId;
 
-    @Version
-    private Long version; // For optimistic locking
-
-    public Wallet(Long userId, BigDecimal balance) {
-        this.userId = userId;
-        this.balance = balance;
-        this.version = 0L;
-    }
+    private Double balance;
 }

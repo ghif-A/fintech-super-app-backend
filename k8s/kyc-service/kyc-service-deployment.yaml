@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kyc-service
+  labels:
+    app: kyc-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kyc-service
+  template:
+    metadata:
+      labels:
+        app: kyc-service
+    spec:
+      containers:
+        - name: kyc-service
+          image: your-repo/kyc-service:latest # Replace with your image
+          ports:
+            - containerPort: 8086
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres-kyc:5432/kyc_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: kyc_user
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: kyc_password

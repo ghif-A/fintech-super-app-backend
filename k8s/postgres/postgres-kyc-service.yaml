@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-kyc
+spec:
+  selector:
+    app: postgres-kyc
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

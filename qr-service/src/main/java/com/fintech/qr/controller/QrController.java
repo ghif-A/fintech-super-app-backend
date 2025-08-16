@@ -1,36 +1,39 @@
 package com.fintech.qr.controller;
 
 import com.fintech.qr.dto.GenerateQrRequest;
-import com.fintech.qr.dto.GenerateQrResponse;
-import com.fintech.qr.dto.ScanQrRequest;
-import com.fintech.qr.dto.ScanQrResponse;
+import com.fintech.qr.dto.QrResponse;
+import com.fintech.qr.dto.VerifyQrRequest;
 import com.fintech.qr.service.QrService;
 import com.google.zxing.WriterException;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 
 @RestController
 @RequestMapping("/api/qr")
 public class QrController {
 
-    @Autowired
-    private QrService qrService;
+    private final QrService qrService;
 
-    @PostMapping("/generate")
-    public ResponseEntity<GenerateQrResponse> generateQrCode(@Valid @RequestBody GenerateQrRequest request) throws IOException, WriterException, NoSuchAlgorithmException, InvalidKeyException {
-        GenerateQrResponse response = qrService.generateQrCode(request);
-        return ResponseEntity.ok(response);
+    public QrController(QrService qrService) {
+        this.qrService = qrService;
     }
 
-    @PostMapping("/scan")
-    public ResponseEntity<ScanQrResponse> scanQrCode(@Valid @RequestBody ScanQrRequest request) throws NoSuchAlgorithmException, InvalidKeyException, IOException {
-        ScanQrResponse response = qrService.scanAndVerifyQrCode(request.getQrPayload());
-        return ResponseEntity.ok(response);
+    @PostMapping("/generate")
+    public ResponseEntity<QrResponse> generateQr(@RequestBody GenerateQrRequest request) {
+        try {
+            return ResponseEntity.ok(qrService.generateQr(request));
+        } catch (WriterException | IOException e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/verify")
+    public ResponseEntity<Boolean> verifyQr(@RequestBody VerifyQrRequest request) {
+        return ResponseEntity.ok(qrService.verifyQr(request));
     }
 }

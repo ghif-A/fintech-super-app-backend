@@ -1,10 +1,10 @@
 package com.fintech.wallet.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import jakarta.persistence.*;
-import java.math.BigDecimal;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,30 +15,15 @@ import java.time.LocalDateTime;
 public class Transaction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
-    @Column(nullable = false)
-    private Long userId;
+    private String walletId;
 
-    @Column(nullable = false)
-    private BigDecimal amount;
+    private Double amount;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TransactionType type;
+    private ETransactionType type;
 
-    @Column(nullable = false)
-    private String description;
-
-    @Column(nullable = false)
     private LocalDateTime timestamp;
-
-    public Transaction(Long userId, BigDecimal amount, TransactionType type, String description) {
-        this.userId = userId;
-        this.amount = amount;
-        this.type = type;
-        this.description = description;
-        this.timestamp = LocalDateTime.now();
-    }
 }

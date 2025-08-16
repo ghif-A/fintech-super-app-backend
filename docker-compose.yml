@@ -175,7 +175,47 @@ services:
       - fraud-service
       - notification-service
 
+  kyc-service:
+    build:
+      context: ./kyc-service
+      dockerfile: Dockerfile
+    container_name: kyc-service
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_kyc:5432/kyc_db
+      SPRING_DATASOURCE_USERNAME: kyc_user
+      SPRING_DATASOURCE_PASSWORD: kyc_password
+    depends_on:
+      postgres_kyc:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus:v2.37.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - fintech-network
+
+  grafana:
+    image: grafana/grafana:8.5.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - fintech-network
+
 volumes:
   postgres_auth_data:
   postgres_wallet_data:
+  postgres_kyc_data:
   redis_data:
+
+networks:
+  fintech-network:
+    driver: bridge

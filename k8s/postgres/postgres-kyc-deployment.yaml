@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-kyc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-kyc
+  template:
+    metadata:
+      labels:
+        app: postgres-kyc
+    spec:
+      containers:
+        - name: postgres-kyc
+          image: postgres:15-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: kyc_db
+            - name: POSTGRES_USER
+              value: kyc_user
+            - name: POSTGRES_PASSWORD
+              value: kyc_password
+          volumeMounts:
+            - name: postgres-kyc-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-kyc-storage
+          persistentVolumeClaim:
+            claimName: postgres-kyc-pvc
