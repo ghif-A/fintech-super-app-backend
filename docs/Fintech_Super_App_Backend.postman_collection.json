@@ -1,0 +1,421 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+		"name": "Fintech Super App Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"description": "Postman collection for the Fintech Super App Backend microservices."
+	},
+	"item": [
+		{
+			"name": "Auth Service",
+			"item": [
+				{
+					"name": "Signup User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"role\": [\"user\"]\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"testuser\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/auth/signin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"<YOUR_REFRESH_TOKEN_HERE>\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/auth/refreshtoken",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"auth",
+								"refreshtoken"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallet Service",
+			"item": [
+				{
+					"name": "Create Wallet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <YOUR_JWT_TOKEN_HERE>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 1\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/wallets",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Wallet Balance",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <YOUR_JWT_TOKEN_HERE>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/wallets/1/balance",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallets",
+								"1",
+								"balance"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Top-up Wallet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <YOUR_JWT_TOKEN_HERE>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 100.00\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/wallets/1/topup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallets",
+								"1",
+								"topup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Withdraw from Wallet",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <YOUR_JWT_TOKEN_HERE>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"amount\": 50.00\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/wallets/1/withdraw",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallets",
+								"1",
+								"withdraw"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction History",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer <YOUR_JWT_TOKEN_HERE>",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/api/wallets/1/transactions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"wallets",
+								"1",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment Service",
+			"item": [
+				{
+					"name": "P2P Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <YOUR_JWT_TOKEN_HERE>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"senderUserId\": 1,\n    \"receiverUserId\": 2,\n    \"amount\": 25.00,\n    \"idempotencyKey\": \"{{$guid}}\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/payments/p2p",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"payments",
+								"p2p"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Merchant Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <YOUR_JWT_TOKEN_HERE>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"userId\": 1,\n    \"merchantId\": 100,\n    \"amount\": 15.50,\n    \"idempotencyKey\": \"{{$guid}}\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/payments/merchant",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"merchant"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "QR Service",
+			"item": [
+				{
+					"name": "Generate QR Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <YOUR_JWT_TOKEN_HERE>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"merchantId\": 100,\n    \"orderId\": \"ORDER12345\",\n    \"amount\": 50.00,\n    \"currency\": \"USD\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/qr/generate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"qr",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Scan QR Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer <YOUR_JWT_TOKEN_HERE>",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"qrPayload\": \"<PAYLOAD_FROM_GENERATE_QR_RESPONSE>\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/api/qr/scan",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"qr",
+								"scan"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

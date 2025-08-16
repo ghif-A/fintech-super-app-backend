@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: api-gateway:1.0.0-SNAPSHOT # This image needs to be built locally or pushed to a registry
+          ports:
+            - containerPort: 8000
+          env:
+            # These should point to the Kubernetes service names
+            - name: AUTH_SERVICE_URL
+              value: http://auth-service:8080
+            - name: WALLET_SERVICE_URL
+              value: http://wallet-service:8081
+            - name: PAYMENT_SERVICE_URL
+              value: http://payment-service:8082
+            - name: QR_SERVICE_URL
+              value: http://qr-service:8083
+            - name: NOTIFICATION_SERVICE_URL
+              value: http://notification-service:8085

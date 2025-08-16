@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qr-service
+  labels:
+    app: qr-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qr-service
+  template:
+    metadata:
+      labels:
+        app: qr-service
+    spec:
+      containers:
+        - name: qr-service
+          image: qr-service:1.0.0-SNAPSHOT # This image needs to be built locally or pushed to a registry
+          ports:
+            - containerPort: 8083
+          env:
+            - name: QR_HMAC_SECRET
+              value: YourSuperSecretKeyForQRHMACSigningThatIsLongEnoughAndSecureBase64Encoded

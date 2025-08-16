@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraud-service
+  labels:
+    app: fraud-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fraud-service
+  template:
+    metadata:
+      labels:
+        app: fraud-service
+    spec:
+      containers:
+        - name: fraud-service
+          image: fraud-service:1.0.0-SNAPSHOT # This image needs to be built locally or pushed to a registry
+          ports:
+            - containerPort: 8084
+          env:
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092
+            - name: FRAUD_THRESHOLD_DAILY_AMOUNT
+              value: "1000.00"
+            - name: FRAUD_THRESHOLD_TRANSACTION_COUNT
+              value: "10"

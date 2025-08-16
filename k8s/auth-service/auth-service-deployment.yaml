@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  labels:
+    app: auth-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: auth-service:1.0.0-SNAPSHOT # This image needs to be built locally or pushed to a registry
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres-auth:5432/auth_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: auth_user
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: auth_password
+            - name: SPRING_DATA_REDIS_HOST
+              value: redis
+            - name: APP_JWT_SECRET
+              value: YourSuperSecretKeyForJWTGenerationAndValidationThatIsLongEnoughAndSecure
+            - name: APP_JWT_EXPIRATION_MS
+              value: "3600000"
+            - name: APP_JWT_REFRESH_EXPIRATION_MS
+              value: "604800000"

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wallet-service
+  labels:
+    app: wallet-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wallet-service
+  template:
+    metadata:
+      labels:
+        app: wallet-service
+    spec:
+      containers:
+        - name: wallet-service
+          image: wallet-service:1.0.0-SNAPSHOT # This image needs to be built locally or pushed to a registry
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres-wallet:5432/wallet_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: wallet_user
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: wallet_password
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: kafka:9092

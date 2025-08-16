@@ -1,0 +1,32 @@
+server:
+  port: 8000
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service
+          uri: http://localhost:8080
+          predicates:
+            - Path=/api/auth/**, /swagger-ui/**, /v3/api-docs/**
+        - id: wallet-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/wallets/**
+        - id: payment-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/api/payments/**
+        - id: qr-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/api/qr/**
+        # Add other services here as they are implemented
+        - id: notification-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/ws/**
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
