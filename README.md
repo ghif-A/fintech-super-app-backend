@@ -19,6 +19,7 @@ This repository contains the backend services for a PayPay-style Fintech Super A
 - [Load Testing (k6)](#load-testing-k6)
 - [Monitoring (Prometheus + Grafana)](#monitoring-prometheus--grafana)
 - [Logging](#logging)
+- [License](#license)
 
 ## Architecture
 
@@ -214,3 +215,7 @@ docker-compose -f monitoring/docker-compose.monitoring.yml up -d
 ## Logging
 
 All services are configured with structured logging in JSON format using Logback and Logstash Logback Encoder. The logback-spring.xml configuration file is included in each service's resources. The logs are sent to the console and can be easily collected and forwarded to a centralized logging platform like the ELK stack (Elasticsearch, Logstash, Kibana) or Splunk.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
