@@ -1,13 +1,32 @@
-# Build stage
-FROM maven:3.8.5-openjdk-17 AS build
+# Stage 1: Build the application
+FROM maven:3.9.9-amazoncorretto-21-alpine AS builder
+
+ARG DNS_SERVER
+# Set DNS if provided
+RUN if [ -n "${DNS_SERVER}" ]; then echo "nameserver ${DNS_SERVER}" > /etc/resolv.conf; fi
+
 WORKDIR /app
+
+# Copy the pom.xml and download dependencies
 COPY pom.xml .
+
+# Copy the source code
 COPY src ./src
+
+# Build the application
 RUN mvn clean install -DskipTests
 
-# Package stage
-FROM openjdk:21-jdk-slim
+# Stage 2: Create the final image
+FROM amazoncorretto:21-alpine
+
 WORKDIR /app
-COPY --from=build /app/target/payment-service-1.0.0-SNAPSHOT.jar payment-service.jar
+
+# Copy the JAR from the builder stage
+COPY --from=builder /app/target/*.jar app.jar
+
+# Expose the port
+
 EXPOSE 8082
-ENTRYPOINT ["java", "-jar", "payment-service.jar"]
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "app.jar"]

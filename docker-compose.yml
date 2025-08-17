@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Database Services
   postgres_auth:
@@ -32,6 +30,23 @@ services:
       - postgres_wallet_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U wallet_user -d wallet_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgres-kyc:
+    image: postgres:15-alpine
+    container_name: postgres_kyc
+    environment:
+      POSTGRES_DB: kyc_db
+      POSTGRES_USER: kyc_user
+      POSTGRES_PASSWORD: kyc_password
+    ports:
+      - "5434:5432" # Map to a different host port to avoid conflict
+    volumes:
+      - postgres_kyc_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kyc_user -d kyc_db"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -187,7 +202,7 @@ services:
       SPRING_DATASOURCE_USERNAME: kyc_user
       SPRING_DATASOURCE_PASSWORD: kyc_password
     depends_on:
-      postgres_kyc:
+      postgres-kyc:
         condition: service_healthy
 
   prometheus:
